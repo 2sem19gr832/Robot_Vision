@@ -34,7 +34,7 @@ end
 
 level = 0.99; %Used with the imbinarize() function.
 binary2 = imbinarize(image_thresholded, level); %The image has been thresholded, but this changes the 0 and 256 -> 0 and 1
-
+ 
 subplot(2,2,2)
 imshow(image_thresholded)
 subplot(2,2,3)
