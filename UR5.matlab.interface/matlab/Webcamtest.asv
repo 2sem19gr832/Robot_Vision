@@ -1,0 +1,4 @@
+webcamlist;
+cam = webcam('EasyCamera');
+figure()
+preview(webcam('EasyCamera'))
