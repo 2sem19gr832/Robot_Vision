@@ -1,15 +1,15 @@
 %Load the test image. This can be replaced by webcam input
 %Test = imread('C:\Users\marti\Desktop\2. semester Control and Automation\Robot Vision\test1.jpg'); 
-clear cam;% clc;
-cam = webcam('c922 Pro Stream Webcam');
-for i = 1:10
-    snapshot(cam);
-end
-Test = snapshot(cam);
+%clear cam;% clc;
+%cam = webcam('c922 Pro Stream Webcam');
+%for i = 1:10
+%    snapshot(cam);
+%end
+% = snapshot(cam);
 %Each color channel of the image, these can later be used.
-R = imcomplement(Test(:, :, 1));
-G = imcomplement(Test(:, :, 2));
-B = imcomplement(Test(:, :, 3));
+R = Test(:, :, 1);
+G = Test(:, :, 2);
+B = Test(:, :, 3);
 
 classes = zeros(length(Test(:,1,1)), length(Test(1,:,1)));
 
@@ -21,35 +21,35 @@ for ii=1:size(Test,1) %Inspect each pixel of the image
         ratioRB = double(Test(ii,jj,1)+1)/double(Test(ii,jj,3)+1); %Ratio between the Red and blue color.
         ratioBG = double(Test(ii,jj,3)+1)/double(Test(ii,jj,2)+1); %Ratio between the Green and blue color.
         ratioGB = double(Test(ii,jj,2)+1)/double(Test(ii,jj,3)+1); %Ratio between the blue and green color. 
+        ratioRG = double(Test(ii,jj,1)+1)/double(Test(ii,jj,2)+1);
         pixel = Test(ii, jj);
-        % check pixel value and assign new value
-        if ratioBG > 1.45 && ratioRB > 2  %RED            RED: ratioBG > 1 && ratioRB > 2
-            new_pixel=cat(3, 255, 0, 0);
-            classc = 1;
-        elseif ratioGB > 0.8 && ratioRB < 1.1 %GREEN      Green: 0.9 > ratioGB && ratioRB < 1
-            new_pixel = cat(3, 0, 255, 0);
-            classc = 2;
-        elseif ratioBG > 0.7 && ratioRB < 2 && B(ii,jj) < 100 %BLUE         BLUE: ratioBG > 0.5 && ratioRB < 2
-            new_pixel = cat(3, 0, 0, 255);
-            classc = 3;
-        elseif ratioBG < 1.1 && ratioRB > 2 %YELLOW       %YELLOW: ratioBG < 1 && ratioRB > 2
-            new_pixel = cat(3, 0, 60, 210);
-            classc = 4;
-        elseif ratioRB > 1.5 && ratioBG < 1.4
-            new_pixel = cat(3,60,60,210);
-            classc = 5;
-        elseif R(ii,jj) < 10 && G(ii,jj) < 10 && B(ii,jj) < 10
-            new_pixel = cat(3,0,0,0);
-            classc = 6;
-        else
-            new_pixel = cat(3, 0, 0, 0);
-            classc = 0;
-        end
-        % save new pixel value in thresholded image
-        image_thresholded(ii,jj,:)=new_pixel;
-        classes(ii, jj) = classc;
-        %ratioBGv(ii, jj) = ratioBG;
-
+          % check pixel value and assign new value
+          if ratioRG > 10 && ratioRB > 2 && R(ii, jj) < 150 %RED            RED: ratioBG > 1 && ratioRB > 2
+              new_pixel=cat(3, 255, 0, 0);
+              classc = 1;
+          elseif ratioGB > 1.5 && ratioRG < 1.5 && G(ii, jj) < 100%GREEN      Green: 0.9 > ratioGB && ratioRB < 1
+              new_pixel = cat(3, 0, 255, 0);
+              classc = 2;
+          elseif ratioBG > 1.3 && ratioRB < 0.5 && B(ii,jj) < 100 %BLUE         BLUE: ratioBG > 0.5 && ratioRB < 2
+              new_pixel = cat(3, 0, 0, 255);
+              classc = 3;
+          elseif ratioRG > 1.3 && ratioRB > 2 && G(ii, jj) > 85 %YELLOW       %YELLOW: ratioBG < 1 && ratioRB > 2
+              new_pixel = cat(3, 0, 60, 210);
+              classc = 4;
+          elseif ratioRB > 1.5 && ratioBG < 1.5 && R(ii, jj) > 160 %Orange
+              new_pixel = cat(3,60,60,210);
+              classc = 5;
+          elseif R(ii,jj) < 10 && G(ii,jj) < 10 && B(ii,jj) < 10
+              new_pixel = cat(3,0,0,0);
+              classc = 6;
+          else
+              new_pixel = cat(3, 0, 0, 0);
+              classc = 0;
+          end
+          % save new pixel value in thresholded image
+          image_thresholded(ii,jj,:)=new_pixel;
+          classes(ii, jj) = classc;
+          %ratioBGv(ii, jj) = ratioBG;
      end
 end
   %Use isMember to make binary images for each color and find the bounding
@@ -111,59 +111,43 @@ for k = 1:length(class(1,1,:))
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on
-                text(centroids(:,1),centroids(:,2), 'RED', 'FontSize', 14)
+                text(centroids(:,1),centroids(:,2), 'RED', 'FontSize', 14, 'color', 'w')
             end
             if k == 2
                 plot(boundary(:,2), boundary(:,1), 'g', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on
-                text(centroids(:,1),centroids(:,2), 'GREEN', 'FontSize', 14)
+                text(centroids(:,1),centroids(:,2), 'GREEN', 'FontSize', 14, 'color', 'w')
             end
             if k == 3
                 plot(boundary(:,2), boundary(:,1), 'b', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'BLUE', 'FontSize', 14)
+                text(centroids(:,1),centroids(:,2), 'BLUE', 'FontSize', 14, 'color', 'w')
             end
             if k == 4
                 plot(boundary(:,2), boundary(:,1), 'y', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'YELLOW', 'FontSize', 14)
+                text(centroids(:,1),centroids(:,2), 'YELLOW', 'FontSize', 14, 'color', 'w')
+            end
             if k == 5
                 plot(boundary(:,2), boundary(:,1), 'y', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'ORANGE', 'FontSize', 14)
+                text(centroids(:,1),centroids(:,2), 'ORANGE', 'FontSize', 14, 'color', 'w')
             end
             if k == 6
-                plot(boundary(:,2), boundary(:,1), 'y', 'LineWidth', 2)
+                plot(boundary(:,2), boundary(:,1), 'w', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'BLACK', 'FontSize', 14)
+                text(centroids(:,1),centroids(:,2), 'BLACK', 'FontSize', 14, 'color', 'w')
             end
         end
     end
-    end
 end
-
-% %%
-% Rb = bwboundaries(R, 'noholes'); %Find boundaries of the BLOBs
-% Gb = bwboundaries(G, 'noholes');
-% Bb = bwboundaries(B, 'noholes');
-% Yb = bwboundaries(Y, 'noholes');
-% 
-% Rc = regionprops(R,'centroid'); %Find centroids for each object
-% Gc = regionprops(G,'centroid');
-% Bc = regionprops(B,'centroid');
-% Yc = regionprops(Y,'centroid');
-% 
-% Rcentroids = cat(1, Rc.Centroid); % Find the centroids of the BLOBs, these can be used to assign coordinate systems to the lego bricks.
-% Gcentroids = cat(1, Gc.Centroid);
-% Bcentroids = cat(1, Bc.Centroid);
-% Ycentroids = cat(1, Yc.Centroid);
