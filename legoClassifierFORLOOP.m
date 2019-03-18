@@ -18,26 +18,26 @@ for ii=1:size(Test,1) %Inspect each pixel of the image
         ratioBG = double(Test(ii,jj,2)+1)/double(Test(ii,jj,3)+1); %Ratio between the blue and green color. 
         pixel = Test(ii, jj);
           % check pixel value and assign new value
-          if 1.45 > ratioBG && ratioRB > 2  %RED                %YELLOW: 1 < ratioBG && ratioRB > 2 RED: 1 > ratioBG && ratioRB > 2 BLUE: 0.5 > ratioBG && ratioRB < 2 Green: 0.9 > ratioGB && ratioRB < 1                                   
-              new_pixel=cat(3, 255, 0, 0);
-              classc = 1;
-          elseif 0.8 > ratioGB && ratioRB < 1.1 %GREEN
-              new_pixel = cat(3, 0, 255, 0);
-              classc = 2;
-          elseif 0.7 > ratioBG && ratioRB < 2 %BLUE
-              new_pixel = cat(3, 0, 0, 255);
-              classc = 3;
-          elseif 1.1 < ratioBG && ratioRB > 2 %YELLOW
-              new_pixel = cat(3, 0, 60, 210);
-              classc = 4;
-          else
-              new_pixel = cat(3, 0, 0, 0);
-              classc = 0;
-          end
-          % save new pixel value in thresholded image
-          image_thresholded(ii,jj,:)=new_pixel;
-          classes(ii, jj) = classc;
-          %ratioBGv(ii, jj) = ratioBG;
+        if 1.45 > ratioBG && ratioRB > 2  %RED                %YELLOW: 1 < ratioBG && ratioRB > 2 RED: 1 > ratioBG && ratioRB > 2 BLUE: 0.5 > ratioBG && ratioRB < 2 Green: 0.9 > ratioGB && ratioRB < 1                                   
+            new_pixel=cat(3, 255, 0, 0);
+            classc = 1;
+        elseif 0.8 > ratioGB && ratioRB < 1.1 %GREEN
+            new_pixel = cat(3, 0, 255, 0);
+            classc = 2;
+        elseif 0.7 > ratioBG && ratioRB < 2 %BLUE
+            new_pixel = cat(3, 0, 0, 255);
+            classc = 3;
+        elseif 1.1 < ratioBG && ratioRB > 2 %YELLOW
+            new_pixel = cat(3, 0, 60, 210);
+            classc = 4;
+        else
+            new_pixel = cat(3, 0, 0, 0);
+            classc = 0;
+        end
+        % save new pixel value in thresholded image
+        image_thresholded(ii,jj,:)=new_pixel;
+        classes(ii, jj) = classc;
+        %ratioBGv(ii, jj) = ratioBG;
      end
 end
   %Use isMember to make binary images for each color and find the bounding
