@@ -5,7 +5,7 @@
 %for i = 1:10
 %    snapshot(cam);
 %end
-% = snapshot(cam);
+%Test = snapshot(cam);
 %Each color channel of the image, these can later be used.
 R = Test(:, :, 1);
 G = Test(:, :, 2);
@@ -30,7 +30,7 @@ for ii=1:size(Test,1) %Inspect each pixel of the image
           elseif ratioGB > 1.5 && ratioRG < 1.5 && G(ii, jj) < 100%GREEN      Green: 0.9 > ratioGB && ratioRB < 1
               new_pixel = cat(3, 0, 255, 0);
               classc = 2;
-          elseif ratioBG > 1.3 && ratioRB < 0.5 && B(ii,jj) < 100 %BLUE         BLUE: ratioBG > 0.5 && ratioRB < 2
+          elseif ratioBG > 1.3 && ratioRB < 0.5 && B(ii,jj) > 50 %BLUE         BLUE: ratioBG > 0.5 && ratioRB < 2
               new_pixel = cat(3, 0, 0, 255);
               classc = 3;
           elseif ratioRG > 1.3 && ratioRB > 2 && G(ii, jj) > 85 %YELLOW       %YELLOW: ratioBG < 1 && ratioRB > 2
@@ -39,7 +39,7 @@ for ii=1:size(Test,1) %Inspect each pixel of the image
           elseif ratioRB > 1.5 && ratioBG < 1.5 && R(ii, jj) > 160 %Orange
               new_pixel = cat(3,60,60,210);
               classc = 5;
-          elseif R(ii,jj) < 10 && G(ii,jj) < 10 && B(ii,jj) < 10
+          elseif R(ii,jj) < 30 && G(ii,jj) < 30 && B(ii,jj) < 30
               new_pixel = cat(3,0,0,0);
               classc = 6;
           else
@@ -146,7 +146,7 @@ for k = 1:length(class(1,1,:))
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'BLACK', 'FontSize', 14, 'color', 'w')
+                text(centroids(:,1),centroids(:,2), 'BLACK', 'FontSize', 14, 'color', 'b')
             end
         end
     end
