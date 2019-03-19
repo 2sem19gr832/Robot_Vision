@@ -113,6 +113,7 @@ for k = 1:length(class(1,1,:))
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on
                 text(centroids(:,1),centroids(:,2), 'RED', 'FontSize', 14, 'color', 'r')
+                
             end
             if k == 2
                 plot(bounder(:,2), bounder(:,1), 'g', 'LineWidth', 2)
@@ -120,6 +121,7 @@ for k = 1:length(class(1,1,:))
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on
                 text(centroids(:,1),centroids(:,2), 'GREEN', 'FontSize', 14, 'color', 'g')
+                
             end
             if k == 3
                 plot(bounder(:,2), bounder(:,1), 'b', 'LineWidth', 2)
@@ -127,6 +129,7 @@ for k = 1:length(class(1,1,:))
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
                 text(centroids(:,1),centroids(:,2), 'BLUE', 'FontSize', 14, 'color', 'b')
+                
             end
             if k == 4
                 plot(bounder(:,2), bounder(:,1), 'y', 'LineWidth', 2)
@@ -134,6 +137,7 @@ for k = 1:length(class(1,1,:))
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
                 text(centroids(:,1),centroids(:,2), 'YELLOW', 'FontSize', 14, 'color', 'y')
+                
             end
             if k == 5
                 plot(bounder(:,2), bounder(:,1),'Color',[0.9,0.5,0.2], 'LineWidth', 2)
@@ -141,6 +145,7 @@ for k = 1:length(class(1,1,:))
                 plot(centroids(:,1),centroids(:,2), 'o')
                 hold on 
                 text(centroids(:,1),centroids(:,2), 'ORANGE', 'FontSize', 10, 'Color', [0.9,0.5,0.2])
+                
             end
             if k == 6
                 plot(bounder(:,2), bounder(:,1), 'Color',[0.6,0.6,0.6], 'LineWidth', 2)
@@ -148,10 +153,16 @@ for k = 1:length(class(1,1,:))
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
                 text(centroids(:,1),centroids(:,2), 'BLACK', 'FontSize', 10, 'Color', [0.3,0.3,0.3])
+                %create array of brick centroids & boundaries.
             end
         end
     end
 end
+%get centroids of all the possible bricks, using camera calibration get
+%distance to said centroid, move over centroid, take another picture, get
+%orientation and position of brick irt. tool. -> move down, pick it up.
+%Camera calibration for distance, find center of image (center of camera
+%axis), then find the center of the rotation (tool rotation axis).
 %%
 figure(2)
 imshow(Test)
@@ -165,3 +176,8 @@ hold on
 plot(xt,yt, 'r*', xt, fliplr(yt),'r*')
 boundpoly = polyshape([xt(1),yt(1); xt(2),yt(1); xt(2),yt(2);xt(1),yt(2)]);% xt(2),yt(2)])
 hold on; plot(boundpoly)
+obheight = xt(2)-xt(1);
+obwidth = yt(2)-yt(1);
+obis = imcrop(Test,[xt(1),yt(1),obheight,obwidth]);
+figure(3)
+imshow(obis)
