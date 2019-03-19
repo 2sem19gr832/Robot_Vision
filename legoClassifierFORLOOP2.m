@@ -98,56 +98,70 @@ figure(1)
 imshow(Test)
 title('Classification of Lego Bricks')
 hold on
-
+gray = [0.5, 0.5, 0.5];
+orange = [1,0.5,0.5];
 for k = 1:length(class(1,1,:))
     A = cat(1, bounds{k});
     for x = 1:length(bounds{k})
-        boundary = cell2mat(A(x));
+        bounder = cell2mat(A(x));
         centroidd = cell2mat(centroid{k});
         for u = 1:length(centroidd)
             centroids = struct2array(centroidd(u));
             if k == 1
-                plot(boundary(:,2), boundary(:,1), 'r', 'LineWidth', 2)
+                plot(bounder(:,2), bounder(:,1), 'r', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on
-                text(centroids(:,1),centroids(:,2), 'RED', 'FontSize', 14, 'color', 'w')
+                text(centroids(:,1),centroids(:,2), 'RED', 'FontSize', 14, 'color', 'r')
             end
             if k == 2
-                plot(boundary(:,2), boundary(:,1), 'g', 'LineWidth', 2)
+                plot(bounder(:,2), bounder(:,1), 'g', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on
-                text(centroids(:,1),centroids(:,2), 'GREEN', 'FontSize', 14, 'color', 'w')
+                text(centroids(:,1),centroids(:,2), 'GREEN', 'FontSize', 14, 'color', 'g')
             end
             if k == 3
-                plot(boundary(:,2), boundary(:,1), 'b', 'LineWidth', 2)
+                plot(bounder(:,2), bounder(:,1), 'b', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'BLUE', 'FontSize', 14, 'color', 'w')
+                text(centroids(:,1),centroids(:,2), 'BLUE', 'FontSize', 14, 'color', 'b')
             end
             if k == 4
-                plot(boundary(:,2), boundary(:,1), 'y', 'LineWidth', 2)
+                plot(bounder(:,2), bounder(:,1), 'y', 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'YELLOW', 'FontSize', 14, 'color', 'w')
+                text(centroids(:,1),centroids(:,2), 'YELLOW', 'FontSize', 14, 'color', 'y')
             end
             if k == 5
-                plot(boundary(:,2), boundary(:,1), 'y', 'LineWidth', 2)
+                plot(bounder(:,2), bounder(:,1),'Color',[0.9,0.5,0.2], 'LineWidth', 2)
                 hold on
-                plot(centroids(:,1),centroids(:,2), 'bo')
+                plot(centroids(:,1),centroids(:,2), 'o')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'ORANGE', 'FontSize', 14, 'color', 'w')
+                text(centroids(:,1),centroids(:,2), 'ORANGE', 'FontSize', 10, 'Color', [0.9,0.5,0.2])
             end
             if k == 6
-                plot(boundary(:,2), boundary(:,1), 'w', 'LineWidth', 2)
+                plot(bounder(:,2), bounder(:,1), 'Color',[0.6,0.6,0.6], 'LineWidth', 2)
                 hold on
                 plot(centroids(:,1),centroids(:,2), 'bo')
                 hold on 
-                text(centroids(:,1),centroids(:,2), 'BLACK', 'FontSize', 14, 'color', 'b')
+                text(centroids(:,1),centroids(:,2), 'BLACK', 'FontSize', 10, 'Color', [0.3,0.3,0.3])
             end
         end
     end
 end
+%%
+figure(2)
+imshow(Test)
+hold on
+%plot(bounder(:,2), bounder(:,1), 'c', 'LineWidth',2)
+polyintest = polyshape(bounder(:,2), bounder(:,1));
+%hold on
+plot(polyintest)
+[xt, yt] = boundingbox(polyintest);
+hold on
+plot(xt,yt, 'r*', xt, fliplr(yt),'r*')
+boundpoly = polyshape([xt(1),yt(1); xt(2),yt(1); xt(2),yt(2);xt(1),yt(2)]);% xt(2),yt(2)])
+hold on; plot(boundpoly)
