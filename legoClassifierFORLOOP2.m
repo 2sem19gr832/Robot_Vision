@@ -1,15 +1,20 @@
 %Load the test image. This can be replaced by webcam input
 %Test = imread('C:\Users\marti\Desktop\2. semester Control and Automation\Robot Vision\test1.jpg'); 
-%clear cam;% clc;
-%cam = webcam('c922 Pro Stream Webcam');
-%for i = 1:10
-%    snapshot(cam);
-%end
-%Test = snapshot(cam);
+clear cam;% clc;
+cam = webcam('c922 Pro Stream Webcam');
+for i = 1:10
+    snapshot(cam);
+end
+Test = snapshot(cam);
+
 %Each color channel of the image, these can later be used.
+
+inipos = [284.1740 -215.6560  271.6160   -1.2848    2.8497   -0.0066];
 R = Test(:, :, 1);
 G = Test(:, :, 2);
 B = Test(:, :, 3);
+immid = [320,240];
+pix2mm = 2.0876;
 
 classes = zeros(length(Test(:,1,1)), length(Test(1,:,1)));
 
@@ -100,13 +105,16 @@ title('Classification of Lego Bricks')
 hold on
 gray = [0.5, 0.5, 0.5];
 orange = [1,0.5,0.5];
+
 for k = 1:length(class(1,1,:))
     A = cat(1, bounds{k});
     for x = 1:length(bounds{k})
         bounder = cell2mat(A(x));
         centroidd = cell2mat(centroid{k});
         for u = 1:length(centroidd)
-            centroids = struct2array(centroidd(u));
+            centroids(:,:,u) = struct2array(centroidd(u));
+            mid2cent(:,:,u) = centroids(:,:,u)-immid;%[1,1]-immid;%
+            m2cmm(:,:,u) = mid2cent(:,:,u)/pix2mm;  %mid to brick center in mm
             if k == 1
                 plot(bounder(:,2), bounder(:,1), 'r', 'LineWidth', 2)
                 hold on
@@ -163,21 +171,31 @@ end
 %orientation and position of brick irt. tool. -> move down, pick it up.
 %Camera calibration for distance, find center of image (center of camera
 %axis), then find the center of the rotation (tool rotation axis).
-%%
-figure(2)
-imshow(Test)
-hold on
-%plot(bounder(:,2), bounder(:,1), 'c', 'LineWidth',2)
-polyintest = polyshape(bounder(:,2), bounder(:,1));
+
+%Movement to centroid
+rot135 = [cosd(135) -sind(135); sind(135) cosd(135)];
+brickpos = (m2cmm(:,:,2)*rot135)*[0 -1;-1 0];
+finalbrickpos = inipos+[brickpos,-200,0,0,0];
+
+
+%% Testing zone:
+%figure(2)
+%imshow(Test)
 %hold on
-plot(polyintest)
-[xt, yt] = boundingbox(polyintest);
-hold on
-plot(xt,yt, 'r*', xt, fliplr(yt),'r*')
-boundpoly = polyshape([xt(1),yt(1); xt(2),yt(1); xt(2),yt(2);xt(1),yt(2)]);% xt(2),yt(2)])
-hold on; plot(boundpoly)
-obheight = xt(2)-xt(1);
-obwidth = yt(2)-yt(1);
-obis = imcrop(Test,[xt(1),yt(1),obheight,obwidth]);
-figure(3)
-imshow(obis)
+
+%cent = centroids(:,:,6);
+%mid2centroid = immid - cent
+%plot(bounder(:,2), bounder(:,1), 'c', 'LineWidth',2)
+%polyintest = polyshape(bounder(:,2), bounder(:,1));
+%hold on
+%plot(polyintest)
+%[xt, yt] = boundingbox(polyintest);
+%hold on
+%plot(xt,yt, 'r*', xt, fliplr(yt),'r*')
+%boundpoly = polyshape([xt(1),yt(1); xt(2),yt(1); xt(2),yt(2);xt(1),yt(2)]);% xt(2),yt(2)])
+%hold on; plot(boundpoly)
+%obheight = xt(2)-xt(1);
+%obwidth = yt(2)-yt(1);
+%obis = imcrop(Test,[xt(1),yt(1),obheight,obwidth]);
+%figure(3)
+%imshow(obis)
