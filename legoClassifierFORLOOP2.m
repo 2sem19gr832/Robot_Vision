@@ -178,6 +178,22 @@ brickpos = (m2cmm(:,:,2)*rot135)*[0 -1;-1 0];
 finalbrickpos = inipos+[brickpos,-200,0,0,0];
 
 
+%%   Move to specific brick
+target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
+target = target / pix2mm;
+target = target * rot135 *[0 1;1 0];
+finalbrickpos = inipos+[target,-200,0,0,0];
+%% Perform HOG on specific brick
+cu = snapshot(cam);
+hsv = rgb2hsv(cu);
+cubw = imbinarize(hsv(:,:,2), 0.65);
+cuopen = imopen(cubw, strel('disk',2));
+cuCC = bwconncomp(cuopen);
+cuBW2 = bwselect(cuopen, 320,240, 4);
+%max(cell2mat(closeupCC.PixelIdxList))
+%[~, num] = max()
+hogorientation(cuBW2)
+
 %% Testing zone:
 %figure(2)
 %imshow(Test)
