@@ -12,9 +12,10 @@ disp('Connected!');
 %%
 clear cam;
 clc;
-inipos = [388.2100 -294.2200  271.1200   -1.2848    2.8497   -0.0066];
+inipos = [388.2100 -294.2200  271.1200   -1.2848    2.8497   -0.0066];  %Translational measurements in mm
 stackpos1 = [250.1900 -451.7200   22.5462   -1.2596    2.8646   -0.0178];
 stackposini = stackpos1 + [0 0 100 0 0 0];
+%Duplo brick height = 19.2mm
 urMoveL(sock,inipos)
 pause(0.1)
 cam = webcam('c922 Pro Stream Webcam');
@@ -297,3 +298,4 @@ pick bricks BRY
 Function to pick brick B (green,bottom pos, 1st char)
 Function to place brick B (include some increment thing)
 
+Pick Brick function
