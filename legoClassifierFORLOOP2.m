@@ -1,6 +1,17 @@
 %Load the test image. This can be replaced by webcam input
 %Test = imread('C:\Users\marti\Desktop\2. semester Control and Automation\Robot Vision\test1.jpg'); 
 clear cam;% clc;
+clc;
+
+% % Get the robot ip from the teach pendant: File -> About
+% robot_ip = '192.168.1.80';
+% %  robot_ip = '127.0.0.1';         % URsim
+% sock = tcpip(robot_ip, 30000, 'NetworkRole', 'server');
+% fclose(sock);
+% disp('Press Play on robot');
+% fopen(sock);
+% disp('Connected!');
+
 cam = webcam('c922 Pro Stream Webcam');
 for i = 1:10
     snapshot(cam);
@@ -10,6 +21,7 @@ Test = snapshot(cam);
 %Each color channel of the image, these can later be used.
 
 inipos = [284.1740 -215.6560  271.6160   -1.2848    2.8497   -0.0066];
+urMoveL(sock,inipos)
 R = Test(:, :, 1);
 G = Test(:, :, 2);
 B = Test(:, :, 3);
@@ -175,15 +187,19 @@ end
 %Movement to centroid
 rot135 = [cosd(135) -sind(135); sind(135) cosd(135)];
 brickpos = (m2cmm(:,:,2)*rot135)*[0 -1;-1 0];
-finalbrickpos = inipos+[brickpos,-200,0,0,0];
+%finalbrickpos = inipos+[brickpos,-200,0,0,0];
 
-
-%%   Move to specific brick
-target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
+%   Move to specific brick
+target = [centroid{3}{1}(1).Centroid(1),centroid{3}{1}(1).Centroid(2)] - immid;
 target = target / pix2mm;
 target = target * rot135 *[0 1;1 0];
-finalbrickpos = inipos+[target,-200,0,0,0];
+finalbrickpos2 = inipos+[target,-200,0,0,0];
+urMoveL(sock,finalbrickpos)
+%figure(3)
+%testyim = snapshot(cam);
+%imshow(testyim)
 %% Perform HOG on specific brick
+figure(2)
 cu = snapshot(cam);
 hsv = rgb2hsv(cu);
 cubw = imbinarize(hsv(:,:,2), 0.65);
@@ -192,9 +208,15 @@ cuCC = bwconncomp(cuopen);
 cuBW2 = bwselect(cuopen, 320,240, 4);
 %max(cell2mat(closeupCC.PixelIdxList))
 %[~, num] = max()
-hogorientation(cuBW2)
+brickang = hogorientation(cuBW2)
+%urMoveL(sock,finalbrickpos);
+%urMoveRot(sock,false,[0,0,1], -90)
 
 %% Testing zone:
+bpos = urReadPosJ(sock);
+
+%urMoveJ(sock,
+
 %figure(2)
 %imshow(Test)
 %hold on
@@ -215,3 +237,6 @@ hogorientation(cuBW2)
 %obis = imcrop(Test,[xt(1),yt(1),obheight,obwidth]);
 %figure(3)
 %imshow(obis)
+
+%Characters
+%margeGYB, homerBBlY, bartBRY, lisaOOY, maggieBY
