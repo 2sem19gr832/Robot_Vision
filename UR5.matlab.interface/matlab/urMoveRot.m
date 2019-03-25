@@ -11,7 +11,7 @@ function urMoveRot(sock, is_absolute, axis, angle_deg)
 %   See also URMOVETRANS, URMOVE.
     
     rad = angle_deg * pi/180;
-    Robot_Pose = urReadPose(sock);
+    Robot_Pose = urReadPosC(sock);
     Translation = Robot_Pose(1:3); % in mm
     Orientation = Robot_Pose(4:6);
     
