@@ -1,32 +1,36 @@
 %Load the test image. This can be replaced by webcam input
 %Test = imread('C:\Users\marti\Desktop\2. semester Control and Automation\Robot Vision\test1.jpg'); 
-clear cam;% clc;
+%%
+% Get the robot ip from the teach pendant: File -> About
+robot_ip = '192.168.1.80';
+% robot_ip = '127.0.0.1';         % URsim
+sock = tcpip(robot_ip, 30000, 'NetworkRole', 'server');
+fclose(sock);
+disp('Press Play on robot');
+fopen(sock);
+disp('Connected!');
+%%
+clear cam;
 clc;
-
-% % Get the robot ip from the teach pendant: File -> About
-% robot_ip = '192.168.1.80';
-% %  robot_ip = '127.0.0.1';         % URsim
-% sock = tcpip(robot_ip, 30000, 'NetworkRole', 'server');
-% fclose(sock);
-% disp('Press Play on robot');
-% fopen(sock);
-% disp('Connected!');
-
+inipos = [388.2100 -294.2200  271.1200   -1.2848    2.8497   -0.0066];
+stackpos1 = [250.1900 -451.7200   22.5462   -1.2596    2.8646   -0.0178];
+stackposini = stackpos1 + [0 0 100 0 0 0];
+urMoveL(sock,inipos)
+pause(0.1)
 cam = webcam('c922 Pro Stream Webcam');
-for i = 1:10
+for i = 1:20
     snapshot(cam);
 end
 Test = snapshot(cam);
-
+figure(1)
+imshow(Test)
 %Each color channel of the image, these can later be used.
-
-inipos = [284.1740 -215.6560  271.6160   -1.2848    2.8497   -0.0066];
-urMoveL(sock,inipos)
 R = Test(:, :, 1);
 G = Test(:, :, 2);
 B = Test(:, :, 3);
 immid = [320,240];
 pix2mm = 2.0876;
+closepix2mm = sqrt(80^2+95^2)/20;
 
 classes = zeros(length(Test(:,1,1)), length(Test(1,:,1)));
 
@@ -104,7 +108,7 @@ for k = 1:length(class(1,1,:)) %Find boundaries and centroids
     centroid{k} = cat(1, region(k));
 end
 
-figure(1)
+%figure(1)
 %subplot(1, 3, 1)
 %imshow(Test)
 %title('Original')
@@ -185,58 +189,111 @@ end
 %axis), then find the center of the rotation (tool rotation axis).
 
 %Movement to centroid
-rot135 = [cosd(135) -sind(135); sind(135) cosd(135)];
-brickpos = (m2cmm(:,:,2)*rot135)*[0 -1;-1 0];
+%rot135 = [cosd(135) -sind(135); sind(135) cosd(135)];
+%brickpos = (m2cmm(:,:,2)*rot135)*[0 -1;-1 0];
 %finalbrickpos = inipos+[brickpos,-200,0,0,0];
 
-%   Move to specific brick
-target = [centroid{3}{1}(1).Centroid(1),centroid{3}{1}(1).Centroid(2)] - immid;
+% Move to specific brick
+target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
 target = target / pix2mm;
-target = target * rot135 *[0 1;1 0];
-finalbrickpos2 = inipos+[target,-200,0,0,0];
-urMoveL(sock,finalbrickpos)
-%figure(3)
-%testyim = snapshot(cam);
-%imshow(testyim)
-%% Perform HOG on specific brick
-figure(2)
-cu = snapshot(cam);
-hsv = rgb2hsv(cu);
-cubw = imbinarize(hsv(:,:,2), 0.65);
-cuopen = imopen(cubw, strel('disk',2));
-cuCC = bwconncomp(cuopen);
-cuBW2 = bwselect(cuopen, 320,240, 4);
-%max(cell2mat(closeupCC.PixelIdxList))
-%[~, num] = max()
-brickang = hogorientation(cuBW2)
+movetool(sock,[target,200],[0,0,0])
+pause(0.1)
+for i = 1:2
+    
+    figure(2)
+    cu = snapshot(cam);
+    hsv = rgb2hsv(cu);
+    cubw = imbinarize(hsv(:,:,2), 0.65);
+    cuopen = imopen(cubw, strel('disk',2));
+    cuCC = bwconncomp(cuopen);
+    cuBW2 = bwselect(cuopen, 320,240, 4);
+    %max(cell2mat(closeupCC.PixelIdxList))
+    %[~, num] = max()
+    [brickpos,brickang] = hogorientation(cuBW2);
+    %movetool(sock,[0,0,0],[0,0,0])
+    %pause(0.1)
+    movetool(sock,[brickpos/closepix2mm*-1,0],[0,0,-mod(brickang+45,90)+45])
+    pause(0.5)
+    figure(4)
+    testyimg = snapshot(cam);
+    imshow(testyimg)
+    hold on
+    plot(immid(1),immid(2), '*r')
+end
+movetool(sock,[0,-41,0],[0,0,0])
+movetool(sock,[0,0,65],[0,0,0])
+urSetIO(sock,0,1);
+urSetIO(sock,1,0);
+pause(0.2)
+urMoveL(sock,inipos)
+urMoveL(sock,stackposini)
+urMoveL(sock,stackpos1)
+opengrip(sock);
+urMoveL(sock,stackposini)
+%::::::::::::::::::::::::::::::::::::
+%position 2 :::::::::::::::::::::::::
+%::::::::::::::::::::::::::::::::::::
+target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
+target = target / pix2mm;
+movetool(sock,[target,200],[0,0,0])
+pause(0.1)
+for i = 1:2
+    
+    figure(2)
+    cu = snapshot(cam);
+    hsv = rgb2hsv(cu);
+    cubw = imbinarize(hsv(:,:,2), 0.65);
+    cuopen = imopen(cubw, strel('disk',2));
+    cuCC = bwconncomp(cuopen);
+    cuBW2 = bwselect(cuopen, 320,240, 4);
+    %max(cell2mat(closeupCC.PixelIdxList))
+    %[~, num] = max()
+    [brickpos,brickang] = hogorientation(cuBW2);
+    %movetool(sock,[0,0,0],[0,0,0])
+    %pause(0.1)
+    movetool(sock,[brickpos/closepix2mm*-1,0],[0,0,-mod(brickang+45,90)+45])
+    pause(0.5)
+    figure(4)
+    testyimg = snapshot(cam);
+    imshow(testyimg)
+    hold on
+    plot(immid(1),immid(2), '*r')
+end
+movetool(sock,[0,-41,0],[0,0,0])
+movetool(sock,[0,0,65],[0,0,0])
+urSetIO(sock,0,1);
+urSetIO(sock,1,0);
+pause(0.2)
+urMoveL(sock,inipos)
+urMoveL(sock,stackposini)
+urMoveL(sock,stackpos1)
+opengrip(sock);
+urMoveL(sock,stackposini)
+
+%60 in z for good position
+%z position for brick grip = 5.1437
+%% close grip:
+function closegrip(sock)
+urSetIO(sock, 0, 1);
+urSetIO(sock, 1, 0);
+end
+%% open grip:
+function opengrip(sock)
+urSetIO(sock, 0, 0);
+urSetIO(sock, 1, 1);
+end
 %urMoveL(sock,finalbrickpos);
 %urMoveRot(sock,false,[0,0,1], -90)
 
 %% Testing zone:
-bpos = urReadPosJ(sock);
-
-%urMoveJ(sock,
-
-%figure(2)
-%imshow(Test)
-%hold on
-
-%cent = centroids(:,:,6);
-%mid2centroid = immid - cent
-%plot(bounder(:,2), bounder(:,1), 'c', 'LineWidth',2)
-%polyintest = polyshape(bounder(:,2), bounder(:,1));
-%hold on
-%plot(polyintest)
-%[xt, yt] = boundingbox(polyintest);
-%hold on
-%plot(xt,yt, 'r*', xt, fliplr(yt),'r*')
-%boundpoly = polyshape([xt(1),yt(1); xt(2),yt(1); xt(2),yt(2);xt(1),yt(2)]);% xt(2),yt(2)])
-%hold on; plot(boundpoly)
-%obheight = xt(2)-xt(1);
-%obwidth = yt(2)-yt(1);
-%obis = imcrop(Test,[xt(1),yt(1),obheight,obwidth]);
-%figure(3)
-%imshow(obis)
+%bpos = urReadPosJ(sock);
 
 %Characters
 %margeGYB, homerBBlY, bartBRY, lisaOOY, maggieBY
+
+Initpos
+Function with initpos, image of bricks.
+pick bricks BRY
+Function to pick brick B (green,bottom pos, 1st char)
+Function to place brick B (include some increment thing)
+
