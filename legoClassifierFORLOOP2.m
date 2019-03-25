@@ -195,9 +195,9 @@ target = target / pix2mm;
 target = target * rot135 *[0 1;1 0];
 finalbrickpos2 = inipos+[target,-200,0,0,0];
 urMoveL(sock,finalbrickpos)
-figure(3)
-testyim = snapshot(cam);
-imshow(testyim)
+%figure(3)
+%testyim = snapshot(cam);
+%imshow(testyim)
 %% Perform HOG on specific brick
 figure(2)
 cu = snapshot(cam);
@@ -210,7 +210,7 @@ cuBW2 = bwselect(cuopen, 320,240, 4);
 %[~, num] = max()
 brickang = hogorientation(cuBW2)
 %urMoveL(sock,finalbrickpos);
-urMoveRot(sock,false,[0,0,1], -90)
+%urMoveRot(sock,false,[0,0,1], -90)
 
 %% Testing zone:
 bpos = urReadPosJ(sock);
@@ -237,3 +237,6 @@ bpos = urReadPosJ(sock);
 %obis = imcrop(Test,[xt(1),yt(1),obheight,obwidth]);
 %figure(3)
 %imshow(obis)
+
+%Characters
+%margeGYB, homerBBlY, bartBRY, lisaOOY, maggieBY
