@@ -193,8 +193,12 @@ end
 %Movement to centroid
 %rot135 = [cosd(135) -sind(135); sind(135) cosd(135)];
 %brickpos = (m2cmm(:,:,2)*rot135)*[0 -1;-1 0];
-%finalbrickpos = inipos+[brickpos,-200,0,0,0];
+%finalbrickpo,s = inipos+[brickpos,-200,0,0,0];
 
+homer = [0, 3; 19.2, 6;19.2*2, 4];
+for i = 1:3
+    getbrick(homer(i,2), sock, centroid, (i-1)*19.2)
+end
 % Move to specific brick
 %Pick character Marge
 stackheight1 = getbrick(2,sock,centroid,stackpos1(3))    %takes sock and color from 1-6

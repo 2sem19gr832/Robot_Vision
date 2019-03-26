@@ -3,7 +3,7 @@ function stackheight2 = getbrick(color,sock,centroid,stackheight)
 %Characters %margeGYB, homerBBlY, bartBRY, lisaOOY, maggieBY
 %RGBYOBl
 inipos = [388.2100 -294.2200 271.1200 -1.2848 2.8497 -0.0066];  %Translational measurements in mm
-stackpos1 = [250.1900 -451.7200 stackheight -1.2596 2.8646 -0.0178]; %Necessary position to stack duplo bricks.
+stackpos1 = [250.1900 -451.7200 22.5462+stackheight -1.2596 2.8646 -0.0178]; %Necessary position to stack duplo bricks.
 stackposini = stackpos1 + [0 0 100 0 0 0];
 
 %next, pick up brick, increment stackheight by 19.2mm, return.
