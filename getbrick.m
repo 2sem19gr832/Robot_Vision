@@ -1,4 +1,5 @@
-function stackheight2 = getbrick(color,sock, stackheight) %also include current stackpos or inistackpos?
+function stackheight2 = getbrick(color,sock,centroid,stackheight)
+%also include current stackpos or inistackpos?
 %Characters %margeGYB, homerBBlY, bartBRY, lisaOOY, maggieBY
 %RGBYOBl
 inipos = [388.2100 -294.2200 271.1200 -1.2848 2.8497 -0.0066];  %Translational measurements in mm

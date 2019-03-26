@@ -197,9 +197,9 @@ end
 
 % Move to specific brick
 %Pick character Marge
-stackheight1 = getbrick(2,sock,stackpos1(3))    %takes sock and color from 1-6
-stackheight2 = getbrick(4,sock,stackheight1(3))
-stackheight3 = getbrick(3,sock,stackheight2(3)) 
+stackheight1 = getbrick(2,sock,centroid,stackpos1(3))    %takes sock and color from 1-6
+stackheight2 = getbrick(4,sock,centroid,stackheight1(3))
+stackheight3 = getbrick(3,sock,centroid,stackheight2(3)) 
 % target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
 % target = target / pix2mm;
 % movetool(sock,[target,200],[0,0,0])
