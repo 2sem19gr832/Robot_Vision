@@ -12,17 +12,18 @@ disp('Connected!');
 %%
 clear cam;
 clc;
-inipos = [388.2100 -294.2200  271.1200   -1.2848    2.8497   -0.0066];  %Translational measurements in mm
-stackpos1 = [250.1900 -451.7200   22.5462   -1.2596    2.8646   -0.0178];
+inipos = [388.2100 -294.2200 271.1200 -1.2848 2.8497 -0.0066];  %Translational measurements in mm
+stackpos1 = [250.1900 -451.7200 22.5462 -1.2596 2.8646 -0.0178];
 stackposini = stackpos1 + [0 0 100 0 0 0];
 %Duplo brick height = 19.2mm
-urMoveL(sock,inipos)
+%urMoveL(sock,inipos)
 pause(0.1)
-cam = webcam('c922 Pro Stream Webcam');
-for i = 1:20
-    snapshot(cam);
-end
-Test = snapshot(cam);
+%cam = webcam('c922 Pro Stream Webcam');
+%for i = 1:20
+%    snapshot(cam);
+%end
+%Test = snapshot(cam);
+Test = imread('Workspace+images/testingimage.png');
 figure(1)
 imshow(Test)
 %Each color channel of the image, these can later be used.
@@ -195,81 +196,86 @@ end
 %finalbrickpos = inipos+[brickpos,-200,0,0,0];
 
 % Move to specific brick
-target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
-target = target / pix2mm;
-movetool(sock,[target,200],[0,0,0])
-pause(0.1)
-for i = 1:2
-    
-    figure(2)
-    cu = snapshot(cam);
-    hsv = rgb2hsv(cu);
-    cubw = imbinarize(hsv(:,:,2), 0.65);
-    cuopen = imopen(cubw, strel('disk',2));
-    cuCC = bwconncomp(cuopen);
-    cuBW2 = bwselect(cuopen, 320,240, 4);
-    %max(cell2mat(closeupCC.PixelIdxList))
-    %[~, num] = max()
-    [brickpos,brickang] = hogorientation(cuBW2);
-    %movetool(sock,[0,0,0],[0,0,0])
-    %pause(0.1)
-    movetool(sock,[brickpos/closepix2mm*-1,0],[0,0,-mod(brickang+45,90)+45])
-    pause(0.5)
-    figure(4)
-    testyimg = snapshot(cam);
-    imshow(testyimg)
-    hold on
-    plot(immid(1),immid(2), '*r')
-end
-movetool(sock,[0,-41,0],[0,0,0])
-movetool(sock,[0,0,65],[0,0,0])
-urSetIO(sock,0,1);
-urSetIO(sock,1,0);
-pause(0.2)
-urMoveL(sock,inipos)
-urMoveL(sock,stackposini)
-urMoveL(sock,stackpos1)
-opengrip(sock);
-urMoveL(sock,stackposini)
-%::::::::::::::::::::::::::::::::::::
-%position 2 :::::::::::::::::::::::::
-%::::::::::::::::::::::::::::::::::::
-target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
-target = target / pix2mm;
-movetool(sock,[target,200],[0,0,0])
-pause(0.1)
-for i = 1:2
-    
-    figure(2)
-    cu = snapshot(cam);
-    hsv = rgb2hsv(cu);
-    cubw = imbinarize(hsv(:,:,2), 0.65);
-    cuopen = imopen(cubw, strel('disk',2));
-    cuCC = bwconncomp(cuopen);
-    cuBW2 = bwselect(cuopen, 320,240, 4);
-    %max(cell2mat(closeupCC.PixelIdxList))
-    %[~, num] = max()
-    [brickpos,brickang] = hogorientation(cuBW2);
-    %movetool(sock,[0,0,0],[0,0,0])
-    %pause(0.1)
-    movetool(sock,[brickpos/closepix2mm*-1,0],[0,0,-mod(brickang+45,90)+45])
-    pause(0.5)
-    figure(4)
-    testyimg = snapshot(cam);
-    imshow(testyimg)
-    hold on
-    plot(immid(1),immid(2), '*r')
-end
-movetool(sock,[0,-41,0],[0,0,0])
-movetool(sock,[0,0,65],[0,0,0])
-urSetIO(sock,0,1);
-urSetIO(sock,1,0);
-pause(0.2)
-urMoveL(sock,inipos)
-urMoveL(sock,stackposini)
-urMoveL(sock,stackpos1)
-opengrip(sock);
-urMoveL(sock,stackposini)
+%Pick character Marge
+stackheight1 = getbrick(2,sock,stackpos1(3))    %takes sock and color from 1-6
+stackheight2 = getbrick(4,sock,stackheight1(3))
+stackheight3 = getbrick(3,sock,stackheight2(3)) 
+% target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
+% target = target / pix2mm;
+% movetool(sock,[target,200],[0,0,0])
+% pause(0.1)
+% for i = 1:2
+%     
+%     figure(2)
+%     cu = snapshot(cam);
+%     hsv = rgb2hsv(cu);
+%     cubw = imbinarize(hsv(:,:,2), 0.65);
+%     cuopen = imopen(cubw, strel('disk',2));
+%     cuCC = bwconncomp(cuopen);
+%     cuBW2 = bwselect(cuopen, 320,240, 4);
+%     %max(cell2mat(closeupCC.PixelIdxList))
+%     %[~, num] = max()
+%     [brickpos,brickang] = hogorientation(cuBW2);
+%     %movetool(sock,[0,0,0],[0,0,0])
+%     %pause(0.1)
+%     movetool(sock,[brickpos/closepix2mm*-1,0],[0,0,-mod(brickang+45,90)+45])
+%     pause(0.5)
+%     figure(4)
+%     testyimg = snapshot(cam);
+%     imshow(testyimg)
+%     hold on
+%     plot(immid(1),immid(2), '*r')
+% end
+% movetool(sock,[0,-41,0],[0,0,0])
+% movetool(sock,[0,0,65],[0,0,0])
+% urSetIO(sock,0,1);
+% urSetIO(sock,1,0);
+% pause(0.2)
+% urMoveL(sock,inipos)
+% urMoveL(sock,stackposini)
+% urMoveL(sock,stackpos1)
+% opengrip(sock);
+% urMoveL(sock,stackposini)
+% %::::::::::::::::::::::::::::::::::::
+% %position 2 :::::::::::::::::::::::::
+% %::::::::::::::::::::::::::::::::::::
+% target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
+% target = target / pix2mm;
+% movetool(sock,[target,200],[0,0,0])
+% pause(0.1)
+% for i = 1:2
+%     
+%     figure(2)
+%     cu = snapshot(cam);
+%     hsv = rgb2hsv(cu);
+%     cubw = imbinarize(hsv(:,:,2), 0.65);
+%     cuopen = imopen(cubw, strel('disk',2));
+%     cuCC = bwconncomp(cuopen);
+%     cuBW2 = bwselect(cuopen, 320,240, 4);
+%     %max(cell2mat(closeupCC.PixelIdxList))
+%     %[~, num] = max()
+%     [brickpos,brickang] = hogorientation(cuBW2);
+%     %movetool(sock,[0,0,0],[0,0,0])
+%     %pause(0.1)
+%     movetool(sock,[brickpos/closepix2mm*-1,0],[0,0,-mod(brickang+45,90)+45])
+%     pause(0.5)
+%     figure(4)
+%     testyimg = snapshot(cam);
+%     imshow(testyimg)
+%     hold on
+%     plot(immid(1),immid(2), '*r')
+% end
+% movetool(sock,[0,-41,0],[0,0,0])
+% movetool(sock,[0,0,65],[0,0,0])
+% urSetIO(sock,0,1);
+% urSetIO(sock,1,0);
+% pause(0.2)
+% urMoveL(sock,inipos)
+% urMoveL(sock,stackposini)
+% urMoveL(sock,stackpos1)
+% opengrip(sock);
+% urMoveL(sock,stackposini)
+%getbrick(
 
 %60 in z for good position
 %z position for brick grip = 5.1437
@@ -292,10 +298,10 @@ end
 %Characters
 %margeGYB, homerBBlY, bartBRY, lisaOOY, maggieBY
 
-Initpos
-Function with initpos, image of bricks.
-pick bricks BRY
-Function to pick brick B (green,bottom pos, 1st char)
-Function to place brick B (include some increment thing)
+%Initpos
+%Function with initpos, image of bricks.
+%pick bricks BRY
+%Function to pick brick B (green,bottom pos, 1st char)
+%Function to place brick B (include some increment thing)
 
-Pick Brick function
+%Pick Brick function
