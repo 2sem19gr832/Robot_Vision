@@ -23,31 +23,22 @@ closepix2mm = sqrt(80^2+95^2)/20;
 urMoveL(sock,inipos)
 pause(1)
 cam = webcam('c922 Pro Stream Webcam');
-for i = 1:20
-    snapshot(cam);
-end
-Test = snapshot(cam);
 %Test = imread('Workspace+images/testingimage.png');
-figure(1)
-imshow(Test)
 
-[T, bounds, centroid, class] = getCentroid(Test);
 
-imshow(Test)
+%imshow(Test)
 title('Classification of Lego Bricks')
 hold on
 gray = [0.5, 0.5, 0.5];
 orange = [1,0.5,0.5];
 %plotcentroids;
 %%%%%PLOT CENTROIDS
-plotBrick(Test, bounds, centroid, class)
+%plotBrick(Test, bounds, centroid, class)
 homer = [ 3; 4; 1;5;3;4];
 for i = 1:length(homer)
-    getbrick(homer(i), sock, centroid, (i-1)*19.2,cam);
-    [T, bounds, centroid, class] = getCentroid(Test);
-    plotBrick(Test, bounds, centroid, class)
+    getbrick(homer(i), sock, (i-1)*19.2,cam);
 end
-
+disp('done')
 %60 in z for good position
 %z position for brick grip = 5.1437
 

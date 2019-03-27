@@ -1,7 +1,6 @@
-function getbrick(color,sock,centroid,stackheight,cam)
-%also include current stackpos or inistackpos?
-%Characters %margeGYB, homerBBlY, bartBRY, lisaOOY, maggieBY
-%RGBYOBl
+function getbrick(color,sock,stackheight,cam)
+%moves to initial position then takes an image, calculates centroids for
+%bricks, then picks one up and stacks it at stack position.
 %%% CONSTANTS:::
 inipos = [388.2100 -294.2200 271.1200 -1.2848 2.8497 -0.0066];  %Translational measurements in mm
 stackpos1 = [250.1900 -451.7200 22.5462+stackheight -1.2596 2.8646 -0.0178]; %Necessary position to stack duplo bricks.
@@ -11,6 +10,13 @@ pix2mm = 2.0876;
 closepix2mm = sqrt(80^2+95^2)/20;
 
 %next, pick up brick, increment stackheight by 19.2mm, return.
+    urMoveL(sock,inipos)
+    for i = 1:20
+        snapshot(cam);
+    end
+    Test = snapshot(cam);
+    [T, bounds, centroid, class] = getCentroid(Test);
+    plotBrick(Test, bounds, centroid, class)
     target = [centroid{color}{1}(1).Centroid(1),centroid{color}{1}(1).Centroid(2)] - immid;
     target = target / pix2mm;
     movetool(sock,[target,200],[0,0,0])
