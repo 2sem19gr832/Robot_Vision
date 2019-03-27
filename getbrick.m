@@ -38,12 +38,12 @@ closepix2mm = sqrt(80^2+95^2)/20;
     end
     movetool(sock,[0,-41,0],[0,0,0])
     movetool(sock,[0,0,65],[0,0,0])
-    urSetIO(sock,0,1);
-    urSetIO(sock,1,0);
+    gripclose(sock)
     pause(0.2)
     urMoveL(sock,inipos)
     urMoveL(sock,stackposini)
     urMoveL(sock,stackpos1)
-    opengrip(sock);
+    gripopen(sock);
     urMoveL(sock,stackposini)
-stackheight2 = stackpos1+[0 0 19.2 0 0 0]
+    urMoveL(sock,inipos)
+stackheight2 = stackpos1+[0 0 19.2 0 0 0];

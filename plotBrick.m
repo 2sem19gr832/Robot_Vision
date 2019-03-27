@@ -1,6 +1,9 @@
 function plotBrick(Test, bounds, centroid, class)
-
-
+%get centroids of all the possible bricks, using camera calibration get
+%distance to said centroid, move over centroid, take another picture, get
+%orientation and position of brick irt. tool. -> move down, pick it up.
+%Camera calibration for distance, find center of image (center of camera
+%axis), then find the center of the rotation (tool rotation axis).
 
 imshow(Test)
 title('Classification of Lego Bricks')
