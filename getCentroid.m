@@ -1,4 +1,4 @@
-function [T, bounds, centroid] = getCentroid(Test) 
+function [T, bounds, centroid, class] = getCentroid(Test) 
 
 R = Test(:, :, 1);
 G = Test(:, :, 2);
