@@ -16,13 +16,13 @@ inipos = [388.2100 -294.2200 271.1200 -1.2848 2.8497 -0.0066];  %Translational m
 stackpos1 = [250.1900 -451.7200 22.5462 -1.2596 2.8646 -0.0178];
 stackposini = stackpos1 + [0 0 100 0 0 0];
 %Duplo brick height = 19.2mm
-%urMoveL(sock,inipos)
+urMoveL(sock,inipos)
 pause(0.1)
-%cam = webcam('c922 Pro Stream Webcam');
-%for i = 1:20
-%    snapshot(cam);
-%end
-%Test = snapshot(cam);
+cam = webcam('c922 Pro Stream Webcam');
+for i = 1:20
+    snapshot(cam);
+end
+Test = snapshot(cam);
 Test = imread('Workspace+images/testingimage.png');
 figure(1)
 imshow(Test)
@@ -195,15 +195,15 @@ end
 %brickpos = (m2cmm(:,:,2)*rot135)*[0 -1;-1 0];
 %finalbrickpo,s = inipos+[brickpos,-200,0,0,0];
 
-homer = [0, 3; 19.2, 6;19.2*2, 4];
+homer = [ 3; 6; 4];
 for i = 1:3
-    getbrick(homer(i,2), sock, centroid, (i-1)*19.2)
+    getbrick(homer(i), sock, centroid, (i-1)*19.2,cam)
 end
 % Move to specific brick
 %Pick character Marge
-stackheight1 = getbrick(2,sock,centroid,stackpos1(3))    %takes sock and color from 1-6
-stackheight2 = getbrick(4,sock,centroid,stackheight1(3))
-stackheight3 = getbrick(3,sock,centroid,stackheight2(3)) 
+% stackheight1 = getbrick(2,sock,centroid,stackpos1(3))    %takes sock and color from 1-6
+% stackheight2 = getbrick(4,sock,centroid,stackheight1(3))
+% stackheight3 = getbrick(3,sock,centroid,stackheight2(3)) 
 % target = [centroid{4}{1}(1).Centroid(1),centroid{4}{1}(1).Centroid(2)] - immid;
 % target = target / pix2mm;
 % movetool(sock,[target,200],[0,0,0])
