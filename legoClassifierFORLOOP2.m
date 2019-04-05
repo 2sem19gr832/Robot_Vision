@@ -31,9 +31,8 @@ title('Classification of Lego Bricks')
 hold on
 gray = [0.5, 0.5, 0.5];
 orange = [1,0.5,0.5];
-%plotcentroids;
-%%%%%PLOT CENTROIDS
-%plotBrick(Test, bounds, centroid, class)
+
+
 homer = [ 3; 4; 1;5;3;4];
 for i = 1:length(homer)
     getbrick(homer(i), sock, (i-1)*19.2,cam);
